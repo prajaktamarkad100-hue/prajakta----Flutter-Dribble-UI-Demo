@@ -1,0 +1,217 @@
+import 'package:flutter/material.dart';
+import 'screens/home_screen.dart';
+
+void main() {
+  runApp(const PlantStoreApp());
+}
+
+class PlantStoreApp extends StatelessWidget {
+  const PlantStoreApp({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: 'Plant Store UI',
+      debugShowCheckedModeBanner: false,
+      theme: ThemeData(primarySwatch: Colors.green),
+      home: const HomeScreen(),
+    );
+  }
+}
+
+
+import 'package:flutter/material.dart';
+import 'details_screen.dart';
+
+class HomeScreen extends StatelessWidget {
+  const HomeScreen({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        leading: const Icon(Icons.menu),
+        actions: const [Padding(padding: EdgeInsets.all(8), child: Icon(Icons.shopping_cart))],
+      ),
+      body: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Text("Hello Mia", style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
+            const SizedBox(height: 16),
+            TextField(
+              decoration: InputDecoration(
+                hintText: 'Search',
+                prefixIcon: const Icon(Icons.search),
+                border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+              ),
+            ),
+            const SizedBox(height: 16),
+            SizedBox(
+              height: 40,
+              child: ListView(
+                scrollDirection: Axis.horizontal,
+                children: const [
+                  CategoryChip(label: 'Popular'),
+                  CategoryChip(label: 'Outdoor'),
+                  CategoryChip(label: 'Indoor'),
+                  CategoryChip(label: 'Top Pick'),
+                ],
+              ),
+            ),
+            const SizedBox(height: 16),
+            Expanded(
+              child: ListView(
+                scrollDirection: Axis.horizontal,
+                children: [
+                  PlantCard(
+                    image: 'assets/images/plant1.png',
+                    name: 'Aloe Vera',
+                    price: '\$25',
+                    onTap: () {
+                      Navigator.push(context, MaterialPageRoute(
+                        builder: (_) => const PlantDetailsScreen(),
+                      ));
+                    },
+                  ),
+                  const SizedBox(width: 16),
+                  PlantCard(
+                    image: 'assets/images/plant2.png',
+                    name: 'Snake Plant',
+                    price: '\$30',
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: 16),
+            Container(
+              height: 100,
+              decoration: BoxDecoration(
+                color: Colors.green[100],
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: Row(
+                children: [
+                  Image.asset('assets/images/free_shipping_banner.png', width: 100),
+                  const SizedBox(width: 16),
+                  const Text("Free Shipping on all orders!", style: TextStyle(fontSize: 16)),
+                ],
+              ),
+            )
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class CategoryChip extends StatelessWidget {
+  final String label;
+  const CategoryChip({super.key, required this.label});
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(right: 8),
+      child: Chip(label: Text(label)),
+    );
+  }
+}
+
+class PlantCard extends StatelessWidget {
+  final String image;
+  final String name;
+  final String price;
+  final VoidCallback? onTap;
+
+  const PlantCard({super.key, required this.image, required this.name, required this.price, this.onTap});
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        width: 160,
+        decoration: BoxDecoration(
+          color: Colors.green[50],
+          borderRadius: BorderRadius.circular(12),
+        ),
+        child: Column(
+          children: [
+            Hero(tag: name, child: Image.asset(image, height: 100)),
+            const SizedBox(height: 8),
+            Text(name, style: const TextStyle(fontWeight: FontWeight.bold)),
+            Text(price),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+
+import 'package:flutter/material.dart';
+
+class PlantDetailsScreen extends StatelessWidget {
+  const PlantDetailsScreen({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        leading: BackButton(),
+        actions: const [Icon(Icons.favorite_border)],
+      ),
+      body: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          children: [
+            Hero(
+              tag: 'Aloe Vera',
+              child: Image.asset('assets/images/plant1.png', height: 200),
+            ),
+            const SizedBox(height: 16),
+            const Text("Aloe Vera", style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
+            const Text("Type: Succulent", style: TextStyle(color: Colors.grey)),
+            const Text("Category: Indoor"),
+            const SizedBox(height: 8),
+            const Text("\$25", style: TextStyle(fontSize: 20, color: Colors.green)),
+            const SizedBox(height: 16),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: const [
+                IconWithLabel(icon: Icons.wb_sunny, label: "Light: Medium"),
+                IconWithLabel(icon: Icons.opacity, label: "Water: Low"),
+                IconWithLabel(icon: Icons.thermostat, label: "Temp: 22°C"),
+              ],
+            ),
+            const SizedBox(height: 16),
+            const Text(
+              "This is a beautiful plant that purifies air and needs minimal care. Read More...",
+              textAlign: TextAlign.center,
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class IconWithLabel extends StatelessWidget {
+  final IconData icon;
+  final String label;
+
+  const IconWithLabel({super.key, required this.icon, required this.label});
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        Icon(icon, size: 28),
+        const SizedBox(height: 4),
+        Text(label, textAlign: TextAlign.center),
+      ],
+    );
+  }
+}
